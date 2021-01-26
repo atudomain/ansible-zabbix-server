@@ -1,5 +1,5 @@
 .idea*
-vars*
+vars/*
 !vars/zabbix-server-conf.yml.template
 data*
 nginx*
