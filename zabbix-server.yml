@@ -1,0 +1,9 @@
+---
+- name: Zabbix Server with Frontend
+  hosts: localhost
+  vars_files:
+    - ./vars/zabbix-server-conf.yml
+  roles:
+    - directory-structure
+    - nginx-certs
+    - docker-compose
