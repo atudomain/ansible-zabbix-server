@@ -1,0 +1,21 @@
+---
+- name: Generate dhparam
+  openssl_dhparam:
+    path: ./nginx/dhparam.pem
+- name: Generate ssl key
+  openssl_privatekey:
+    path: ./nginx/ssl.key
+- name: Change permissions of ssl key
+  file:
+    path: ./nginx/ssl.key
+    mode: 0644
+- name: Generate csr
+  openssl_csr:
+    path: ./nginx/ssl.csr
+    privatekey_path: ./nginx/ssl.key
+- name: Generate certificate
+  openssl_certificate:
+    path: ./nginx/ssl.crt
+    privatekey_path: ./nginx/ssl.key
+    csr_path: ./nginx/ssl.csr
+    provider: selfsigned
