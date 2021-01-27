@@ -1,0 +1,13 @@
+---
+- name: Create certs directory
+  file:
+    path: ./nginx
+    state: directory
+- name: Create data directory
+  file:
+    path: ./data
+    state: directory
+- name: Create enc directory
+  file:
+    path: ./enc
+    state: directory
