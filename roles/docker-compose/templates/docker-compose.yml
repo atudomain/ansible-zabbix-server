@@ -1,0 +1,51 @@
+version: "3.8"
+services:
+  zabbix-db:
+    container_name: zabbix-db
+    image: postgres:13
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: {{ zabbix_db_name }}
+      POSTGRES_USER: {{ zabbix_db_user }}
+      POSTGRES_PASSWORD: {{ zabbix_db_password }}
+    volumes:
+      - ./data:/var/lib/postgresql/data
+  zabbix-server:
+    container_name: zabbix-server
+    image: zabbix/zabbix-server-pgsql
+    restart: unless-stopped
+    privileged: true
+    environment:
+      DB_SERVER_HOST: "zabbix-db"
+      POSTGRES_DB: {{ zabbix_db_name }}
+      POSTGRES_USER: {{ zabbix_db_user }}
+      POSTGRES_PASSWORD: {{ zabbix_db_password }}
+    volumes:
+      - ./enc:/var/lib/zabbix/enc
+    links:
+      - "zabbix-db:zabbix-db"
+      - "zabbix-agent:zabbix-agent"
+  zabbix-frontend:
+    container_name: zabbix-frontend
+    image: zabbix/zabbix-web-nginx-pgsql
+    restart: unless-stopped
+    environment:
+      DB_SERVER_HOST: "zabbix-db"
+      POSTGRES_DB: {{ zabbix_db_name }}
+      POSTGRES_USER: {{ zabbix_db_user }}
+      POSTGRES_PASSWORD: {{ zabbix_db_password }}
+      ZBX_SERVER_HOST: zabbix-server
+    ports: [{{ public_port_http }}{{ public_port_https }}]
+    volumes:
+      - ./nginx:/etc/ssl/nginx
+    links:
+      - "zabbix-db:zabbix-db"
+      - "zabbix-server:zabbix-server"
+  zabbix-agent:
+    container_name: zabbix-agent
+    image: zabbix/zabbix-agent
+    privileged: true
+    restart: unless-stopped
+    environment:
+      ZBX_HOSTNAME: "zabbix-server"
+      ZBX_SERVER_HOST: "zabbix-server"

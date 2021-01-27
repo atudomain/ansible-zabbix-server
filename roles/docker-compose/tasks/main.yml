@@ -1,0 +1,25 @@
+---
+- name: Prepare public_port_http variable
+  set_fact:
+    public_port_http: ""
+- name: Prepare public_port_http variable
+  set_fact:
+    public_port_http: "8080:8080"
+  when: zabbix_public_port_http == True
+- name: Prepare public_port_https variable
+  set_fact:
+    public_port_https: ""
+- name: Prepare public_port_https variable
+  set_fact:
+    public_port_https: "8443:8443"
+  when: zabbix_public_port_https == True
+- name: Update public_port_http variable
+  set_fact:
+    public_port_http: "{{ public_port_http }},"
+  when: zabbix_public_port_https and zabbix_public_port_http
+- name: Prepare docker-compose.yml
+  template:
+    src: docker-compose.yml
+    dest: ./docker-compose.yml
+- name: Start docker-compose zabbix frontend in production mode
+  shell: "docker-compose up -d"
