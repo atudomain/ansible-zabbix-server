@@ -9,11 +9,13 @@ Out of box features:
 
 # Usage
 
+Start by executing the following command inside downloaded project:
+
 ```
 cp var/zabbix-server-conf.yml.template var/zabbix-server-conf.yml
 ```
 
-var/zabbix-server-conf.yml is main configuration file.
+var/zabbix-server-conf.yml is the main configuration file:
 
 ```
 ---
@@ -30,8 +32,8 @@ so frontend password can be changed safely.
 You can create nginx directory and put there your dhparam.pem, ssl.crt, ssl.key.
 They must be named accordingly.
 If you not, playbook generates default ones (dhparam takes some time).
-Remember to make ssl.key readable for zabbix.
-You can put yours later and re-run playbook.
+Read permissions on ssl.key are added automatically when you re-run playbook, 
+so container zabbix user can read the key.
 
 Run playbook:
 ```
